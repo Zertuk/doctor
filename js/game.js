@@ -9,8 +9,10 @@ var cursors;
 var timeCheck = 0;
 var bombArray = [];
 var explosionArray = [];
+var patientArray = [];
 var g = 0;
 var j = 0;
+var p = 1;
 
 game.state.add('preload', preload_state);
 game.state.add('load', load_state);
