@@ -5,6 +5,7 @@ var load_state = {
 		game.load.audio('noise', 'assets/noise.wav');
 		game.load.image('bomb', 'assets/yarn.png');
 		game.load.image('explosion', 'assets/explosion.png');
+		game.load.spritesheet('patient', 'assets/yarn 3.png');
 	},
 
 	create: function() {
