@@ -16,6 +16,8 @@ var play_state = {
 
 	update: function() {
 
+
+
 		if (cursors.left.isDown) {
 			doctor.body.velocity.x = -150;
 		}
@@ -40,6 +42,8 @@ var play_state = {
 			this.explosionKill();
 		}
 
+		game.physics.arcade.overlap(doctor, explosionArray, this.death, null, this);
+
 	},
 
 	bombLaunch: function() {
@@ -49,6 +53,7 @@ var play_state = {
 		console.log(randY + ' y');
 		bombArray[j] = game.add.sprite(randX, randY, 'bomb');
 		bombArray[j].anchor.setTo(0.5, 0.5);
+
 		if (j > 2) {
 			this.bombExplode();
 		}
@@ -59,6 +64,9 @@ var play_state = {
 		explosionArray[g] = game.add.sprite(bombArray[j - 3].world.x, bombArray[j - 3].world.y, 'explosion');
 		explosionArray[g].scale.setTo(0.25, 0.25);
 		explosionArray[g].anchor.setTo(0.5, 0.5);
+		game.physics.arcade.enable(explosionArray[g]);
+
+
 		timeCheck = game.time.now;
 		g = g + 1;
 		bombArray[j - 3].kill();
@@ -66,6 +74,10 @@ var play_state = {
 
 	explosionKill: function() {
 		explosionArray[g - 1].kill();
+	},
+	death: function() {
+		console.log('gg');
+
 	}
 }
 
