@@ -1,5 +1,7 @@
 var play_state = {
 	create: function() {
+		var safezone = game.add.image(0, 0, 'safezone');
+		var ground = game.add.image(100, 0, 'ground');
 		//player character
 		doctor = game.add.sprite(5, 150, 'doctor');
 		doctor.scale.setTo(1.5, 1.5);
