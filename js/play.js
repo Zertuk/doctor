@@ -48,6 +48,11 @@ var play_state = {
 		cursors = game.input.keyboard.createCursorKeys();
 
 
+		var style = {font : "30px Arial", fill: "#ff0044"};
+		scoreText = game.add.text(5, 5, "0", style);
+
+
+
 		//timers for bombLaunch and patientSpawn functions
 		this.timer = this.game.time.events.loop(1000, this.bombLaunch, this);
 		this.patientTimer = this.game.time.events.loop(5000, this.patientSpawn, this);
@@ -61,7 +66,7 @@ var play_state = {
 			console.log('safe');
 		}
 
-		
+
 		//movement commands & animations
 		if (cursors.left.isDown) {
 			doctor.body.velocity.x = -150;
@@ -93,12 +98,15 @@ var play_state = {
 		game.physics.arcade.overlap(patients, explosionArray, this.patientDeath, null, this);
 		game.physics.arcade.overlap(doctor, patients, this.grabPatient, null, this);
 		game.physics.arcade.overlap(safezone, patients, this.savePatient, null, this);
-
 	},
 
 	savePatient: function(safezone, patients) {
-		patient.kill()
+		patient.kill();
 		score = score + 1;
+
+		var style = {font : "30px Arial", fill: "#ff0044"}
+		scoreText = game.add.text(5, 5, score, style);
+
 		console.log('Score: ' + score);
 	},
 

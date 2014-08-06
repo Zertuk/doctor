@@ -1,6 +1,7 @@
 var game = new Phaser.Game(600, 360, Phaser.AUTO, 'game_container');
 var doctor;
 var score = 0;
+var scoreText;
 var bomb;
 var civilian;
 var child;
