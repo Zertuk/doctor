@@ -11,6 +11,9 @@ var play_state = {
 		var randX = Math.random()*450 + 125;
 		var randY = Math.random()*360;
 		patientArray[0] = game.add.sprite(randX, randY, 'patient');
+		game.physics.arcade.enable(patientArray[0]);
+		patientArray[0].body.collideWorldBounds = true;
+
 
 
 		//initiate cursor keys
@@ -20,7 +23,7 @@ var play_state = {
 		this.timer = this.game.time.events.loop(1000, this.bombLaunch, this);
 		this.patientTimer = this.game.time.events.loop(5000, this.patientSpawn, this);
 
-
+		space_key = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 	},
 
@@ -54,7 +57,20 @@ var play_state = {
 		//collision detection
 		game.physics.arcade.overlap(doctor, explosionArray, this.death, null, this);
 		game.physics.arcade.overlap(patientArray, explosionArray, this.patientDeath, null, this);
+		game.physics.arcade.overlap(doctor, patientArray, this.grabPatient, null, this);
 
+	},
+
+	grabPatient: function() {
+		if (space_key.isDown) {
+			patientArray[0].body.velocity.x = doctor.body.velocity.x;
+			patientArray[0].body.velocity.y = doctor.body.velocity.y;
+		}
+		else {
+			patientArray[0].body.velocity.x = 0;
+			patientArray[0].body.velocity.y = 0;
+
+		}
 	},
 
 	bombLaunch: function() {
@@ -63,6 +79,13 @@ var play_state = {
 		var randY = Math.random()*360;
 		bombArray[j] = game.add.sprite(randX, randY, 'bomb');
 		bombArray[j].anchor.setTo(0.5, 0.5);
+		bombArray[j].animations.add('countdown', [0, 1, 2], 10, true);
+		if (j > 0) {
+			bombArray[j - 1].frame = 1;
+		}
+		if (j > 1) {
+			bombArray[j - 2].frame = 2;
+		}
 
 		//after the 3rd bomb explode the oldest bomb every time a new one is added
 		if (j > 2) {
@@ -98,6 +121,9 @@ var play_state = {
 		var randX = Math.random()*450 + 125;
 		var randY = Math.random()*360;
 		patientArray[p] = game.add.sprite(randX, randY, 'patient');
+		game.physics.arcade.enable(patientArray[p]);
+		patientArray[p].body.collideWorldBounds = true;
+
 		p = p + 1;
 	},
 	patientDeath: function() {

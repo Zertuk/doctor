@@ -13,6 +13,7 @@ var patientArray = [];
 var g = 0;
 var j = 0;
 var p = 1;
+var space_key;
 
 game.state.add('preload', preload_state);
 game.state.add('load', load_state);
