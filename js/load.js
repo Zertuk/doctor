@@ -7,6 +7,10 @@ var load_state = {
 		game.load.image('explosion', 'assets/explosion.png');
 		game.load.spritesheet('patient', 'assets/yarn 3.png');
 		game.load.image('ground', 'assets/ground.png');
+		game.load.audio('explode', 'assets/explode.wav');
+		game.load.audio('explode2', 'assets/explode2.wav');
+		game.load.audio('explode3', 'assets/explode3.wav');
+
 	},
 
 	create: function() {

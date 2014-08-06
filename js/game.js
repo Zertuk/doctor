@@ -14,6 +14,10 @@ var g = 0;
 var j = 0;
 var p = 1;
 var space_key;
+var explode;
+var explode2;
+var explode3;
+var safezone;
 
 game.state.add('preload', preload_state);
 game.state.add('load', load_state);

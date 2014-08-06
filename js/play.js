@@ -1,6 +1,20 @@
 var play_state = {
+	patientSpawn: function() {
+		//spawns a patient randomly, +125 to account for safe zone, then add it to the patient array
+		var randX = Math.random()*450 + 125;
+		var randY = Math.random()*360;
+		// patientArray[p] = game.add.sprite(randX, randY, 'patient');
+		// game.physics.arcade.enable(patientArray[p]);
+		// patientArray[p].body.collideWorldBounds = true;
+
+		// p = p + 1;
+		var patient = patients.create(randX, randY, 'patient');
+		
+	},
 	create: function() {
-		var safezone = game.add.image(0, 0, 'safezone');
+		safezone = game.add.image(0, 0, 'safezone');
+		game.physics.arcade.enable(safezone);
+
 		var ground = game.add.image(100, 0, 'ground');
 		//player character
 		doctor = game.add.sprite(5, 150, 'doctor');
@@ -9,17 +23,30 @@ var play_state = {
 		doctor.body.bounce.y = 0;
 		doctor.body.collideWorldBounds = true;
 
+		patients = game.add.group();
+		patients.enableBody = true;
+
+
+
 		//spawns the first patient at a random location
 		var randX = Math.random()*450 + 125;
 		var randY = Math.random()*360;
-		patientArray[0] = game.add.sprite(randX, randY, 'patient');
-		game.physics.arcade.enable(patientArray[0]);
-		patientArray[0].body.collideWorldBounds = true;
+		// patientArray[0] = game.add.sprite(randX, randY, 'patient');
+		// game.physics.arcade.enable(patientArray[0]);
+		// patientArray[0].body.collideWorldBounds = true;
+
+		var patient = patients.create(randX, randY, 'patient');
+		game.physics.arcade.enable(patient);
 
 
+		//adding the explosion noises
+		explode = game.add.audio('explode');
+		explode2 = game.add.audio('explode2');
+		explode3 = game.add.audio('explode3');
 
 		//initiate cursor keys
 		cursors = game.input.keyboard.createCursorKeys();
+
 
 		//timers for bombLaunch and patientSpawn functions
 		this.timer = this.game.time.events.loop(1000, this.bombLaunch, this);
@@ -30,6 +57,11 @@ var play_state = {
 	},
 
 	update: function() {
+		if (patients.x < 100) {
+			console.log('safe');
+		}
+
+		
 		//movement commands & animations
 		if (cursors.left.isDown) {
 			doctor.body.velocity.x = -150;
@@ -58,19 +90,26 @@ var play_state = {
 
 		//collision detection
 		game.physics.arcade.overlap(doctor, explosionArray, this.death, null, this);
-		game.physics.arcade.overlap(patientArray, explosionArray, this.patientDeath, null, this);
-		game.physics.arcade.overlap(doctor, patientArray, this.grabPatient, null, this);
+		game.physics.arcade.overlap(patients, explosionArray, this.patientDeath, null, this);
+		game.physics.arcade.overlap(doctor, patients, this.grabPatient, null, this);
+		game.physics.arcade.overlap(safezone, patients, this.savePatient, null, this);
 
 	},
 
-	grabPatient: function() {
+	savePatient: function(safezone, patients) {
+		patient.kill()
+		score = score + 1;
+		console.log('Score: ' + score);
+	},
+
+	grabPatient: function(doctor, patient) {
 		if (space_key.isDown) {
-			patientArray[0].body.velocity.x = doctor.body.velocity.x;
-			patientArray[0].body.velocity.y = doctor.body.velocity.y;
+			patient.body.velocity.x = doctor.body.velocity.x;
+			patient.body.velocity.y = doctor.body.velocity.y;
 		}
 		else {
-			patientArray[0].body.velocity.x = 0;
-			patientArray[0].body.velocity.y = 0;
+			patient.body.velocity.x = 0;
+			patient.body.velocity.y = 0;
 
 		}
 	},
@@ -102,6 +141,17 @@ var play_state = {
 		explosionArray[g].scale.setTo(0.25, 0.25);
 		explosionArray[g].anchor.setTo(0.5, 0.5);
 		game.physics.arcade.enable(explosionArray[g]);
+		var rand = Math.round(Math.random()*3);
+		console.log(rand);
+		if (rand == 1) {
+			explode.play();
+		}
+		else if (rand == 2) {
+			explode2.play();
+		}
+		else {
+			explode3.play();
+		}
 
 		//take down the time so that the explosion can be killed after 500ms
 		timeCheck = game.time.now;
@@ -118,18 +168,9 @@ var play_state = {
 		//called if player hits an explosion, goes to end state
 		this.game.state.start('end');
 	},
-	patientSpawn: function() {
-		//spawns a patient randomly, +125 to account for safe zone, then add it to the patient array
-		var randX = Math.random()*450 + 125;
-		var randY = Math.random()*360;
-		patientArray[p] = game.add.sprite(randX, randY, 'patient');
-		game.physics.arcade.enable(patientArray[p]);
-		patientArray[p].body.collideWorldBounds = true;
-
-		p = p + 1;
-	},
-	patientDeath: function() {
+	patientDeath: function(explosionArray, patient) {
 		//called when a patient and an explosion overlap, kills the patient
+		patient.kill();
 		console.log('ded');
 	}
 }
