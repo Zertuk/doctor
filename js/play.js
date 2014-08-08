@@ -9,18 +9,20 @@ var play_state = {
 
 		// p = p + 1;
 		var patient = patients.create(randX, randY, 'patient');
+		patient.events.onInputUp.add(savePatientCheck, this);
 		
 	},
 	create: function() {
-		safezone = game.add.image(0, 0, 'safezone');
-		game.physics.arcade.enable(safezone);
-
 		var ground = game.add.image(100, 0, 'ground');
 		//player character
+		
+
+		safezone = game.add.image(0, 0, 'safezone');
+		safezone.enableBody = true;
+
 		doctor = game.add.sprite(5, 150, 'doctor');
 		doctor.scale.setTo(1.5, 1.5);
 		game.physics.arcade.enable(doctor);
-		doctor.body.bounce.y = 0;
 		doctor.body.collideWorldBounds = true;
 
 		patients = game.add.group();
@@ -36,6 +38,8 @@ var play_state = {
 		// patientArray[0].body.collideWorldBounds = true;
 
 		var patient = patients.create(randX, randY, 'patient');
+		// patient.events.onInputUp.add(savePatientCheck, this);
+
 		game.physics.arcade.enable(patient);
 
 
@@ -62,10 +66,6 @@ var play_state = {
 	},
 
 	update: function() {
-		if (patients.x < 100) {
-			console.log('safe');
-		}
-
 
 		//movement commands & animations
 		if (cursors.left.isDown) {
@@ -97,10 +97,19 @@ var play_state = {
 		game.physics.arcade.overlap(doctor, explosionArray, this.death, null, this);
 		game.physics.arcade.overlap(patients, explosionArray, this.patientDeath, null, this);
 		game.physics.arcade.overlap(doctor, patients, this.grabPatient, null, this);
-		game.physics.arcade.overlap(safezone, patients, this.savePatient, null, this);
+
+		// game.physics.arcade.overlap(safezone, doctor, this.savePatient, null, this);
 	},
 
-	savePatient: function(safezone, patients) {
+	savePatientCheck: function(patient) {
+		if (patient.x < 100) {
+			patients.remove(patient);
+		}
+	},
+
+
+
+	savePatient: function(patient) {
 		patient.kill();
 		score = score + 1;
 
